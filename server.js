@@ -17,6 +17,14 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Sahabat Satwa Klinik API",
+    doc: "https://documenter.getpostman.com/view/39461222/2sAYXFiH8K",
+  });
+});
+
 // Routes
 app.use("/api", pawrentRouter);
 app.use("/api", hewanRouter);

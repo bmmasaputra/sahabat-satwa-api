@@ -1,4 +1,4 @@
-import prisma from "../prisma/prismaClient";
+import prisma from "../prisma/prismaClient.js";
 import { nanoid } from "nanoid";
 
 async function addNewPawrent(req, res) {

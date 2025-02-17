@@ -4,7 +4,7 @@ import {
   getHewanByPawrent,
   updateHewanData,
   deletetHewanById,
-} from "../controller/hewanController";
+} from "../controller/hewanController.js";
 
 const router = express.Router();
 

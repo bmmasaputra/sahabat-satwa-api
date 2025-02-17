@@ -1,4 +1,4 @@
-import prisma from "../prisma/prismaClient";
+import prisma from "../prisma/prismaClient.js";
 import { nanoid } from "nanoid";
 
 async function addNewHewan(req, res) {
@@ -17,9 +17,7 @@ async function addNewHewan(req, res) {
         nama_hewan,
         tahun_lahir_hewan,
         jenis_hewan,
-        pawrent: {
-          id_pawrent,
-        },
+        id_pawrent,
       },
     });
 
@@ -83,9 +81,7 @@ async function updateHewanData(req, res) {
         nama_hewan,
         tahun_lahir_hewan,
         jenis_hewan,
-        pawrent: {
-          id_pawrent,
-        },
+        id_pawrent,
       },
     });
 

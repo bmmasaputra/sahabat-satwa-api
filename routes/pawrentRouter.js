@@ -4,7 +4,7 @@ import {
   getPawrentById,
   updatePawrentData,
   deletetPawrentById,
-} from "../controller/pawrentController";
+} from "../controller/pawrentController.js";
 
 const router = express.Router();
 
