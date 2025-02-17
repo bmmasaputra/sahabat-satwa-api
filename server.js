@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import router from "./routes/pawrentRouter.js";
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,9 @@ app.use(
     origin: true,
   })
 );
+
+// Routes
+app.use("/api", router);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
