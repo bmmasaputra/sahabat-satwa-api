@@ -1,28 +1,32 @@
 import prisma from "../prisma/prismaClient";
 import { nanoid } from "nanoid";
 
-async function addNewPawrent(req, res) {
-  const { nama_lengkap_pawrent, no_telepon_pawrent } = req.body;
+async function addNewHewan(req, res) {
+  const { nama_hewan, tahun_lahir_hewan, jenis_hewan, id_pawrent } = req.body;
 
-  if (!nama_lengkap_pawrent || !no_telepon_pawrent) {
+  if (!nama_hewan || !tahun_lahir_hewan || !jenis_hewan || !id_pawrent) {
     return res.status(400).json({ success: false, message: "All fields required" });
   }
 
-  const pawrentId = nanoid();
+  const hewanId = nanoid();
 
   try {
-    const result = await prisma.pawrent.create({
+    const result = await prisma.hewan.create({
       data: {
-        id_pawrent: pawrentId,
-        nama_lengkap_pawrent: nama_lengkap_pawrent,
-        no_telepon_pawrent: no_telepon_pawrent,
+        id_hewan: hewanId,
+        nama_hewan,
+        tahun_lahir_hewan,
+        jenis_hewan,
+        pawrent: {
+          id_pawrent,
+        },
       },
     });
 
     res.status(201).json({
       success: true,
-      message: "New pawrent added",
-      data: pawrentId,
+      message: "New hewan added",
+      data: hewanId,
     });
   } catch (error) {
     res.status(500).json({
@@ -33,7 +37,7 @@ async function addNewPawrent(req, res) {
   }
 }
 
-async function getPawrentById(req, res) {
+async function getHewanByPawrent(req, res) {
   const pawrentId = req.body.id_pawrent;
 
   if (!pawrentId) {
@@ -41,15 +45,17 @@ async function getPawrentById(req, res) {
   }
 
   try {
-    const result = await prisma.pawrent.findFirst({
+    const result = await prisma.hewan.findMany({
       where: {
-        id_pawrent: pawrentId,
+        pawrent: {
+          id_pawrent: pawrentId,
+        },
       },
     });
 
     res.status(200).json({
       success: true,
-      message: "Pawrent found",
+      message: "Hewan found",
       data: result,
     });
   } catch (error) {
@@ -61,27 +67,31 @@ async function getPawrentById(req, res) {
   }
 }
 
-async function updatePawrentData(req, res) {
-  const { id_pawrent, nama_lengkap_pawrent, no_telepon_pawrent } = req.body;
+async function updateHewanData(req, res) {
+  const { id_hewan, nama_hewan, tahun_lahir_hewan, jenis_hewan, id_pawrent } = req.body;
 
-  if (!id_pawrent || !nama_lengkap_pawrent || !no_telepon_pawrent) {
+  if (!id_hewan || !nama_hewan || !tahun_lahir_hewan || !jenis_hewan || !id_pawrent) {
     return res.status(400).json({ success: false, message: "All fields required" });
   }
 
   try {
-    const result = await prisma.pawrent.update({
+    const result = await prisma.hewan.update({
       where: {
-        id_pawrent: id_pawrent,
+        id_hewan: id_hewan,
       },
       data: {
-        nama_lengkap_pawrent: nama_lengkap_pawrent,
-        no_telepon_pawrent: no_telepon_pawrent,
+        nama_hewan,
+        tahun_lahir_hewan,
+        jenis_hewan,
+        pawrent: {
+          id_pawrent,
+        },
       },
     });
 
     res.status(200).json({
       success: true,
-      message: "Pawrent updated",
+      message: "Hewan updated",
       data: result,
     });
   } catch (error) {
@@ -93,23 +103,23 @@ async function updatePawrentData(req, res) {
   }
 }
 
-async function deletetPawrentById(req, res) {
-  const pawrentId = req.body.id_pawrent;
+async function deletetHewanById(req, res) {
+  const id_hewan = req.body.id_hewan;
 
-  if (!pawrentId) {
+  if (!id_hewan) {
     return res.status(400).json({ success: false, message: "All fields required" });
   }
 
   try {
-    const result = await prisma.pawrent.delete({
+    const result = await prisma.hewan.delete({
       where: {
-        id_pawrent: pawrentId,
+        id_hewan,
       },
     });
 
     res.status(200).json({
       success: true,
-      message: "Pawrent deleted",
+      message: "Hewan deleted",
       data: result,
     });
   } catch (error) {
@@ -121,4 +131,4 @@ async function deletetPawrentById(req, res) {
   }
 }
 
-export { addNewPawrent, getPawrentById, updatePawrentData, deletetPawrentById };
+export { addNewHewan, getHewanByPawrent, updateHewanData, deletetHewanById };
