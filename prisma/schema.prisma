@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model dokter {
+  id_dokter           String             @id @db.VarChar(255)
+  nama_lengkap_dokter String             @db.VarChar(255)
+  no_telepon_dokter   String             @db.VarChar(255)
+  tgl_mulai_kerja     String             @db.VarChar(255)
+  dokter_spesialis    dokter_spesialis[]
+  klinik              klinik[]
+  kunjungan           kunjungan[]
+}
+
+model dokter_spesialis {
+  id_dokter_spesialis String @id @db.VarChar(255)
+  id_dokter          String @db.VarChar(255)
+  id_klinik          String @db.VarChar(255)
+  spesialis_dokter   String @db.VarChar(255)
+  dokter             dokter @relation(fields: [id_dokter], references: [id_dokter], onDelete: Cascade, map: "dokter_spesialis_ibfk_1")
+  klinik             klinik @relation(fields: [id_klinik], references: [id_klinik], onDelete: Cascade, map: "dokter_spesialis_ibfk_2")
+
+  @@index([id_dokter], map: "id_dokter")
+  @@index([id_klinik], map: "id_klinik")
+}
+
+model hewan {
+  id_hewan          String      @id @db.VarChar(255)
+  nama_hewan        String      @db.VarChar(255)
+  tahun_lahir_hewan String      @db.VarChar(255)
+  jenis_hewan       String      @db.VarChar(255)
+  id_pawrent        String      @db.VarChar(255)
+  pawrent           pawrent     @relation(fields: [id_pawrent], references: [id_pawrent], onDelete: Cascade, map: "hewan_ibfk_1")
+  kunjungan         kunjungan[]
+
+  @@index([id_pawrent], map: "id_pawrent")
+}
+
+model klinik {
+  id_klinik         String             @id @db.VarChar(255)
+  nama_klinik       String             @db.VarChar(255)
+  alamat_klinik     String             @db.VarChar(255)
+  no_telepon_klinik String             @db.VarChar(255)
+  id_dokter_tetap   String             @db.VarChar(255)
+  dokter_spesialis  dokter_spesialis[]
+  dokter            dokter             @relation(fields: [id_dokter_tetap], references: [id_dokter], onDelete: Cascade, map: "klinik_ibfk_1")
+  kunjungan         kunjungan[]
+
+  @@index([id_dokter_tetap], map: "id_dokter_tetap")
+}
+
+model kunjungan {
+  id_kunjungan            String      @id @db.VarChar(255)
+  tanggal_kunjungan       String      @db.VarChar(255)
+  diagnosa                String      @db.VarChar(255)
+  id_hewan                String      @db.VarChar(255)
+  id_dokter               String      @db.VarChar(255)
+  id_klinik               String      @db.VarChar(255)
+  id_kunjungan_sebelumnya String?     @db.VarChar(255)
+  kunjungan               kunjungan?   @relation("kunjunganTokunjungan", fields: [id_kunjungan_sebelumnya], references: [id_kunjungan], onDelete: Cascade, map: "kunjungan_ibfk_1")
+  other_kunjungan         kunjungan[] @relation("kunjunganTokunjungan")
+  klinik                  klinik      @relation(fields: [id_klinik], references: [id_klinik], onDelete: Cascade, map: "kunjungan_ibfk_2")
+  dokter                  dokter      @relation(fields: [id_dokter], references: [id_dokter], onDelete: Cascade, map: "kunjungan_ibfk_3")
+  hewan                   hewan       @relation(fields: [id_hewan], references: [id_hewan], onDelete: Cascade, map: "kunjungan_ibfk_4")
+  resep                   resep[]
+
+  @@index([id_dokter], map: "id_dokter")
+  @@index([id_hewan], map: "id_hewan")
+  @@index([id_klinik], map: "id_klinik")
+  @@index([id_kunjungan_sebelumnya], map: "id_kunjungan_sebelumnya")
+}
+
+model obat {
+  id_obat                  String  @id @db.VarChar(255)
+  nama_obat                String  @db.VarChar(255)
+  petunjuk_penggunaan_obat String  @db.VarChar(255)
+  resep                    resep[]
+}
+
+model pawrent {
+  id_pawrent           String  @id @db.VarChar(255)
+  nama_lengkap_pawrent String  @db.VarChar(255)
+  no_telepon_pawrent   String  @db.VarChar(255)
+  hewan                hewan[]
+}
+
+model resep {
+  id_resep        String    @id @db.VarChar(255)
+  frekuensi_resep String    @db.VarChar(255)
+  dosis_resep     String    @db.VarChar(255)
+  id_kunjungan    String    @db.VarChar(255)
+  id_obat         String    @db.VarChar(255)
+  obat            obat      @relation(fields: [id_obat], references: [id_obat], onDelete: Cascade, map: "resep_ibfk_1")
+  kunjungan       kunjungan @relation(fields: [id_kunjungan], references: [id_kunjungan], onDelete: Cascade, map: "resep_ibfk_2")
+
+  @@index([id_kunjungan], map: "id_kunjungan")
+  @@index([id_obat], map: "id_obat")
+}
