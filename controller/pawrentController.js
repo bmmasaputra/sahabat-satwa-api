@@ -7,6 +7,10 @@ const pawrentSchema = Joi.object({
   no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
 });
 
+const phoneSchema = Joi.object({
+  no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
+})
+
 const idSchema = Joi.object({
   id_pawrent: Joi.string().required(),
 });
@@ -33,6 +37,30 @@ async function addNewPawrent(req, res) {
       message: "New pawrent added",
       data: result,
     });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error: error.message });
+  }
+}
+
+async function getPawrentByPhoneNumb(req, res) {
+  const { error } = phoneSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ success: false, message: error.details[0].message });
+  }
+
+  try {
+    const result = await prisma.pawrent.findFirst({
+      where: {id_pawrent: req.body.no_telepon_pawrent}
+    })
+
+    if (!result) {
+      return res.status(404).json({ success: false, message: "Pawrent not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Pawrent found", data: result });
   } catch (error) {
     res
       .status(500)
@@ -103,4 +131,4 @@ async function deletePawrentById(req, res) {
   }
 }
 
-export { addNewPawrent, getPawrentById, updatePawrentData, deletePawrentById };
+export { addNewPawrent, getPawrentByPhoneNumb, getPawrentById, updatePawrentData, deletePawrentById };
