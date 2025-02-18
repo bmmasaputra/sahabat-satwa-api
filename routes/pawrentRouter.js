@@ -3,7 +3,7 @@ import {
   addNewPawrent,
   getPawrentById,
   updatePawrentData,
-  deletetPawrentById,
+  deletePawrentById,
 } from "../controller/pawrentController.js";
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/pawrent", getPawrentById);
 router.post("/pawrent", addNewPawrent);
 router.put("/pawrent", updatePawrentData);
-router.delete("/pawrent", deletetPawrentById);
+router.delete("/pawrent", deletePawrentById);
 
 export default router;
