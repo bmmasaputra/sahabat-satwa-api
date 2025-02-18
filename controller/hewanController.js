@@ -11,6 +11,14 @@ const hewanSchema = Joi.object({
 
 const idSchema = Joi.string().required(); // Updated for parameter validation
 
+const updateSchema = Joi.object({
+  id_hewan: Joi.string().required(),
+  nama_hewan: Joi.string().min(2).required(),
+  tahun_lahir_hewan: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
+  jenis_hewan: Joi.string().min(2).required(),
+  id_pawrent: Joi.string().required(),
+});
+
 async function addNewHewan(req, res) {
   const { error } = hewanSchema.validate(req.body);
   if (error) {
@@ -55,12 +63,8 @@ async function getHewanByPawrent(req, res) {
 }
 
 async function updateHewanData(req, res) {
-  const updateSchema = Joi.object({
-    id_hewan: Joi.string().required(),
-    ...hewanSchema,
-  });
-
   const { error } = updateSchema.validate(req.body);
+
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
   }

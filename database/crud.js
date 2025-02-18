@@ -45,6 +45,8 @@ async function deleteDokterData() {
   return deleteData;
 }
 
+
+
 const response = await addDokterData();
 // const update = await updateDokterData();
 //const deleteDokter = await deleteDokterData();

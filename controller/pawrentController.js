@@ -11,6 +11,12 @@ const phoneSchema = Joi.string().pattern(/^\d+$/).min(10).max(15).required();
 
 const idSchema = Joi.string().required();
 
+const updateSchema = Joi.object({
+  id_pawrent: Joi.string().required(),
+  nama_lengkap_pawrent: Joi.string().min(3).required(),
+  no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
+});
+
 async function addNewPawrent(req, res) {
   const { error } = pawrentSchema.validate(req.body);
   if (error) {
@@ -89,7 +95,6 @@ async function getPawrentById(req, res) {
 }
 
 async function updatePawrentData(req, res) {
-  const updateSchema = idSchema.concat(pawrentSchema);
   const { error } = updateSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
