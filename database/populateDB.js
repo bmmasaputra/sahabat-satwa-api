@@ -45,14 +45,14 @@ async function addKlinikData() {
         nama_klinik: "Klinik Yos Sudarso",
         alamat_klinik: "JL. Yos Sudarso",
         no_telepon_klinik: "082323327469",
-        id_dokter_tetap: "KJG8dXFfrtv_u4TZnLCVF",
+        id_dokter_tetap: dokterId[0],
       },
       {
         id_klinik: klinikId[1],
         nama_klinik: "Klinik G.Obos",
         alamat_klinik: "JL. G.Obos Induk",
         no_telepon_klinik: "082321037479",
-        id_dokter_tetap: "MTJIh5MJTMLraK5BwKsf4",
+        id_dokter_tetap: dokterId[2],
       },
     ],
   });
