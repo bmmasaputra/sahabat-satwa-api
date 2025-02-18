@@ -3,20 +3,35 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const klinikId = [nanoid().toString(), nanoid().toString()];
-const pawrentId = nanoid().toString();
-const obatId = [nanoid().toString(), nanoid().toString()];
+const klinikId = [nanoid(), nanoid()];
+const pawrentId = nanoid();
+const obatId = [nanoid(), nanoid()];
 const hewanId = nanoid();
 const kunjunganId = nanoid();
+const dokterId = [nanoid(), nanoid(), nanoid()];
 
 async function addDokterData() {
-  const insertNewDokter = await prisma.dokter.create({
-    data: {
-      id_dokter: nanoid().toString(),
-      nama_lengkap_dokter: "Dr. Putri Pradiastiwi",
-      no_telepon_dokter: "0840484837837",
-      tgl_mulai_kerja: new Date().toISOString(),
-    },
+  const insertNewDokter = await prisma.dokter.createMany({
+    data: [
+      {
+        id_dokter: dokterId[0],
+        nama_lengkap_dokter: "Dr. Putri Pradiastiwi",
+        no_telepon_dokter: "0840484837837",
+        tgl_mulai_kerja: new Date().toISOString(),
+      },
+      {
+        id_dokter: dokterId[1],
+        nama_lengkap_dokter: "Dr. Irma Kristiani Putri",
+        no_telepon_dokter: "0840943894738",
+        tgl_mulai_kerja: new Date().toISOString(),
+      },
+      {
+        id_dokter: dokterId[2],
+        nama_lengkap_dokter: "Dr. Gita Allamanda Lestari",
+        no_telepon_dokter: "084094384739",
+        tgl_mulai_kerja: new Date().toISOString(),
+      },
+    ],
   });
 
   return insertNewDokter;
@@ -50,25 +65,25 @@ async function addDokterSpesialisData() {
     data: [
       {
         id_dokter_spesialis: nanoid().toString(),
-        id_dokter: "KJG8dXFfrtv_u4TZnLCVF",
+        id_dokter: dokterId[1],
         id_klinik: klinikId[0],
         spesialis_dokter: "Dermatologi",
       },
       {
         id_dokter_spesialis: nanoid().toString(),
-        id_dokter: "KJG8dXFfrtv_u4TZnLCVF",
+        id_dokter: dokterId[1],
         id_klinik: klinikId[1],
         spesialis_dokter: "Dermatologi",
       },
       {
         id_dokter_spesialis: nanoid().toString(),
-        id_dokter: "MTJIh5MJTMLraK5BwKsf4",
+        id_dokter: dokterId[2],
         id_klinik: klinikId[0],
         spesialis_dokter: "Kardiologi",
       },
       {
         id_dokter_spesialis: nanoid().toString(),
-        id_dokter: "MTJIh5MJTMLraK5BwKsf4",
+        id_dokter: dokterId[2],
         id_klinik: klinikId[1],
         spesialis_dokter: "Kardiologi",
       },
@@ -153,11 +168,11 @@ async function addResepData() {
 await addDokterData();
 await addKlinikData();
 await addDokterSpesialisData();
-await addPawrentData()
+await addPawrentData();
 await addHewanData();
 await addObatData();
 await addKunjunganData();
 
-const done = await addResepData()
+const done = await addResepData();
 
-console.log(done, "Done")
+console.log(done, "Done");
