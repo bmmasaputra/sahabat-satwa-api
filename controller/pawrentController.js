@@ -118,7 +118,7 @@ async function updatePawrentData(req, res) {
 }
 
 async function deletePawrentById(req, res) {
-  const { error } = idSchema.validate(req.body);
+  const { error } = idSchema.validate(req.body.id_pawrent);
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
   }
