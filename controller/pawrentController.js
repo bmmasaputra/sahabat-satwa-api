@@ -49,7 +49,7 @@ async function getPawrentByPhoneNumb(req, res) {
 
   try {
     const result = await prisma.pawrent.findFirst({
-      where: { no_telepon_pawrent: req.params.phoneNumber },
+      where: { no_telepon_pawrent: req.params.no },
     });
 
     if (!result) {
