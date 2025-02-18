@@ -3,7 +3,7 @@ import {
   addNewHewan,
   getHewanByPawrent,
   updateHewanData,
-  deletetHewanById,
+  deleteHewanById,
 } from "../controller/hewanController.js";
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/hewan", getHewanByPawrent);
 router.post("/hewan", addNewHewan);
 router.put("/hewan", updateHewanData);
-router.delete("/hewan", deletetHewanById);
+router.delete("/hewan", deleteHewanById);
 
 export default router;
