@@ -9,9 +9,7 @@ const hewanSchema = Joi.object({
   id_pawrent: Joi.string().required(),
 });
 
-const idSchema = Joi.object({
-  id_hewan: Joi.string().required(),
-});
+const idSchema = Joi.string().required(); // Updated for parameter validation
 
 async function addNewHewan(req, res) {
   const { error } = hewanSchema.validate(req.body);
@@ -38,14 +36,14 @@ async function addNewHewan(req, res) {
 }
 
 async function getHewanByPawrent(req, res) {
-  const { error } = idSchema.validate(req.body);
+  const { error } = idSchema.validate(req.params.id); // Validate parameter
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   try {
     const result = await prisma.hewan.findMany({
-      where: { id_pawrent: req.body.id_pawrent },
+      where: { id_pawrent: req.params.id }, // Access parameter
     });
 
     res.status(200).json({ success: true, message: "Hewan found", data: result });
@@ -57,7 +55,11 @@ async function getHewanByPawrent(req, res) {
 }
 
 async function updateHewanData(req, res) {
-  const updateSchema = idSchema.concat(hewanSchema);
+  const updateSchema = Joi.object({
+    id_hewan: Joi.string().required(),
+    ...hewanSchema,
+  });
+
   const { error } = updateSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
@@ -83,7 +85,7 @@ async function updateHewanData(req, res) {
 }
 
 async function deleteHewanById(req, res) {
-  const { error } = idSchema.validate(req.body);
+  const { error } = idSchema.validate(req.body.id_hewan); // Validate body
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
   }

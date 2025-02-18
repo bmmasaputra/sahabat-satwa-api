@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.get("/hewan", getHewanByPawrent);
+router.get("/hewan/pawrent/:id", getHewanByPawrent);
 router.post("/hewan", addNewHewan);
 router.put("/hewan", updateHewanData);
 router.delete("/hewan", deleteHewanById);

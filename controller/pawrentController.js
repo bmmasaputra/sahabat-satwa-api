@@ -7,13 +7,9 @@ const pawrentSchema = Joi.object({
   no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
 });
 
-const phoneSchema = Joi.object({
-  no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
-});
+const phoneSchema = Joi.string().pattern(/^\d+$/).min(10).max(15).required();
 
-const idSchema = Joi.object({
-  id_pawrent: Joi.string().required(),
-});
+const idSchema = Joi.string().required();
 
 async function addNewPawrent(req, res) {
   const { error } = pawrentSchema.validate(req.body);
@@ -45,7 +41,7 @@ async function addNewPawrent(req, res) {
 }
 
 async function getPawrentByPhoneNumb(req, res) {
-  const { error } = phoneSchema.validate(req.body);
+  const { error } = phoneSchema.validate(req.params.no);
 
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
@@ -53,7 +49,7 @@ async function getPawrentByPhoneNumb(req, res) {
 
   try {
     const result = await prisma.pawrent.findFirst({
-      where: { no_telepon_pawrent: req.body.no_telepon_pawrent },
+      where: { no_telepon_pawrent: req.params.phoneNumber },
     });
 
     if (!result) {
@@ -69,14 +65,15 @@ async function getPawrentByPhoneNumb(req, res) {
 }
 
 async function getPawrentById(req, res) {
-  const { error } = idSchema.validate(req.body);
+  const { error } = idSchema.validate(req.params.id);
+
   if (error) {
     return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   try {
     const result = await prisma.pawrent.findFirst({
-      where: { id_pawrent: req.body.id_pawrent },
+      where: { id_pawrent: req.params.id },
     });
 
     if (!result) {

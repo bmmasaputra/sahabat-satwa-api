@@ -9,8 +9,8 @@ import {
 
 const router = express.Router();
 
-router.get("/pawrent", getPawrentById);
-router.get("/pawrent/login", getPawrentByPhoneNumb);
+router.get("/pawrent/:id", getPawrentById);
+router.get("/pawrent/login/:no", getPawrentByPhoneNumb);
 router.post("/pawrent", addNewPawrent);
 router.put("/pawrent", updatePawrentData);
 router.delete("/pawrent", deletePawrentById);
