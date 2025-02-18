@@ -1,11 +1,22 @@
 import prisma from "../prisma/prismaClient.js";
 import { nanoid } from "nanoid";
+import Joi from "joi";
+
+const hewanSchema = Joi.object({
+  nama_hewan: Joi.string().min(2).required(),
+  tahun_lahir_hewan: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
+  jenis_hewan: Joi.string().min(2).required(),
+  id_pawrent: Joi.string().required(),
+});
+
+const idSchema = Joi.object({
+  id_hewan: Joi.string().required(),
+});
 
 async function addNewHewan(req, res) {
-  const { nama_hewan, tahun_lahir_hewan, jenis_hewan, id_pawrent } = req.body;
-
-  if (!nama_hewan || !tahun_lahir_hewan || !jenis_hewan || !id_pawrent) {
-    return res.status(400).json({ success: false, message: "All fields required" });
+  const { error } = hewanSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   const hewanId = nanoid();
@@ -14,117 +25,77 @@ async function addNewHewan(req, res) {
     const result = await prisma.hewan.create({
       data: {
         id_hewan: hewanId,
-        nama_hewan,
-        tahun_lahir_hewan,
-        jenis_hewan,
-        id_pawrent,
+        ...req.body,
       },
     });
 
-    res.status(201).json({
-      success: true,
-      message: "New hewan added",
-      data: hewanId,
-    });
+    res.status(201).json({ success: true, message: "New hewan added", data: result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error: error.message });
   }
 }
 
 async function getHewanByPawrent(req, res) {
-  const pawrentId = req.body.id_pawrent;
-
-  if (!pawrentId) {
-    return res.status(400).json({ success: false, message: "All fields required" });
+  const { error } = idSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   try {
     const result = await prisma.hewan.findMany({
-      where: {
-        pawrent: {
-          id_pawrent: pawrentId,
-        },
-      },
+      where: { id_pawrent: req.body.id_pawrent },
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Hewan found",
-      data: result,
-    });
+    res.status(200).json({ success: true, message: "Hewan found", data: result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error: error.message });
   }
 }
 
 async function updateHewanData(req, res) {
-  const { id_hewan, nama_hewan, tahun_lahir_hewan, jenis_hewan, id_pawrent } = req.body;
-
-  if (!id_hewan || !nama_hewan || !tahun_lahir_hewan || !jenis_hewan || !id_pawrent) {
-    return res.status(400).json({ success: false, message: "All fields required" });
+  const updateSchema = idSchema.concat(hewanSchema);
+  const { error } = updateSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   try {
     const result = await prisma.hewan.update({
-      where: {
-        id_hewan: id_hewan,
-      },
+      where: { id_hewan: req.body.id_hewan },
       data: {
-        nama_hewan,
-        tahun_lahir_hewan,
-        jenis_hewan,
-        id_pawrent,
+        nama_hewan: req.body.nama_hewan,
+        tahun_lahir_hewan: req.body.tahun_lahir_hewan,
+        jenis_hewan: req.body.jenis_hewan,
+        id_pawrent: req.body.id_pawrent,
       },
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Hewan updated",
-      data: result,
-    });
+    res.status(200).json({ success: true, message: "Hewan updated", data: result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error: error.message });
   }
 }
 
-async function deletetHewanById(req, res) {
-  const id_hewan = req.body.id_hewan;
-
-  if (!id_hewan) {
-    return res.status(400).json({ success: false, message: "All fields required" });
+async function deleteHewanById(req, res) {
+  const { error } = idSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ success: false, message: error.details[0].message });
   }
 
   try {
-    const result = await prisma.hewan.delete({
-      where: {
-        id_hewan,
-      },
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Hewan deleted",
-      data: result,
-    });
+    const result = await prisma.hewan.delete({ where: { id_hewan: req.body.id_hewan } });
+    res.status(200).json({ success: true, message: "Hewan deleted", data: result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error: error.message });
   }
 }
 
-export { addNewHewan, getHewanByPawrent, updateHewanData, deletetHewanById };
+export { addNewHewan, getHewanByPawrent, updateHewanData, deleteHewanById };
