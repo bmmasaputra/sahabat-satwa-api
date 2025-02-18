@@ -145,7 +145,7 @@ async function addKunjunganData() {
       tanggal_kunjungan: new Date().toISOString(),
       diagnosa: "Gatal-gatal di telinga",
       id_hewan: hewanId,
-      id_dokter: "KJG8dXFfrtv_u4TZnLCVF",
+      id_dokter: dokterId[1],
       id_klinik: klinikId[0],
     },
   });
