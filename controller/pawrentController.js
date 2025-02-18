@@ -9,7 +9,7 @@ const pawrentSchema = Joi.object({
 
 const phoneSchema = Joi.object({
   no_telepon_pawrent: Joi.string().pattern(/^\d+$/).min(10).max(15).required(),
-})
+});
 
 const idSchema = Joi.object({
   id_pawrent: Joi.string().required(),
@@ -53,8 +53,8 @@ async function getPawrentByPhoneNumb(req, res) {
 
   try {
     const result = await prisma.pawrent.findFirst({
-      where: {id_pawrent: req.body.no_telepon_pawrent}
-    })
+      where: { no_telepon_pawrent: req.body.no_telepon_pawrent },
+    });
 
     if (!result) {
       return res.status(404).json({ success: false, message: "Pawrent not found" });
@@ -131,4 +131,10 @@ async function deletePawrentById(req, res) {
   }
 }
 
-export { addNewPawrent, getPawrentByPhoneNumb, getPawrentById, updatePawrentData, deletePawrentById };
+export {
+  addNewPawrent,
+  getPawrentByPhoneNumb,
+  getPawrentById,
+  updatePawrentData,
+  deletePawrentById,
+};
